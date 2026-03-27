@@ -4,57 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedido de Namoro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #ffcccc;
-            text-align: center;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Evita barras de rolagem quando o botão foge */
         }
 
         .container {
-            padding: 20px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+            position: relative;
         }
 
         h1 {
             color: #ff3366;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 600;
         }
 
-        .heart {
-            font-size: 50px;
-            color: #ff3366;
+        p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
+
+        .buttons-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            position: relative;
+            height: 60px; /* Pre-allocate space to avoid layout shift when #nao moves */
+        }
+
+        button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #sim {
+            background-color: #ff3366;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+        }
+
+        #sim:hover {
+            background-color: #e62e5c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
         }
 
         #nao {
-            font-size: 24px;
-            color: #333;
-            background-color: #ffcccc;
-            border: none;
-            cursor: pointer;
-            position: absolute;
+            background-color: #f0f0f0;
+            color: #555;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative; /* Starts next to the Yes button */
+            z-index: 20;
+        }
+
+        #resposta {
+            margin-top: 30px;
+            font-size: 22px;
+            color: #ff3366;
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Um Pedido de Namoro Especial</h1>
-        <p>Olá amor ❤️,</p>
-        <p>Quero dizer que você ilumina minha vida como ninguém mais.</p>
-        <p>Você aceita namorar comigo?</p>
-        <p class="heart" onclick="mostrarResposta()">❤️</p>
-        <button id="nao" onmouseover="mudarPosicao()">Não</button>
-        <p id="resposta" style="display: none;"></p>
+        <h1>Um Pedido de Namoro Especial ❤️</h1>
+        <p>Olá amor,</p>
+        <p>Quero dizer que você ilumina minha vida como ninguém mais e faz cada momento ser inesquecível.</p>
+        <p class="question">Você aceita namorar comigo?</p>
+
+        <div class="buttons-wrapper">
+            <button id="sim" onclick="mostrarResposta()">Sim</button>
+            <button id="nao" onmouseover="mudarPosicao()">Não</button>
+        </div>
+
+        <p id="resposta"></p>
     </div>
     <script>
         function mostrarResposta() {
             document.getElementById('resposta').style.display = 'block';
             document.getElementById('resposta').innerHTML = 'Sim! Eu aceito, meu amor. ❤️';
+            document.querySelector('.buttons-wrapper').style.display = 'none';
         }
 
         function mudarPosicao() {
             const buttonNao = document.getElementById('nao');
-            const randomX = Math.floor(Math.random() * window.innerWidth);
-            const randomY = Math.floor(Math.random() * window.innerHeight);
+
+            // Mudar para position fixed na primeira vez que passa o mouse
+            if (buttonNao.style.position !== 'fixed') {
+                buttonNao.style.position = 'fixed';
+            }
+
+            // Calcular limites seguros para manter o botão na tela
+            const padding = 20; // Distância das bordas
+            const maxX = window.innerWidth - buttonNao.offsetWidth - padding;
+            const maxY = window.innerHeight - buttonNao.offsetHeight - padding;
+
+            // Gerar posição aleatória dentro dos limites
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
             buttonNao.style.left = `${randomX}px`;
             buttonNao.style.top = `${randomY}px`;
         }
